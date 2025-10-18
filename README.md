@@ -16,14 +16,14 @@ The brute-force attack against the DVWA login form was **successful**, demonstra
 
 ## Steps I performed in exact chronological order
 
-| Step | Action | Description | Purpose |
-| :---: | :--- | :--- | :--- |
-| **1** | **Setup Burp Suite** | Open browser through Burp Suite and forward any unwanted requests. | To intercept the login packet. |
-| **2** | **Initial DVWA Login** | Log in to the DVWA dashboard with valid credentials (`admin`, `password`) to gain access. | To access the Brute Force section of the admin panel. |
-| **3** | **Navigate & Intercept** | Navigate to the **"Brute Force"** tab and input the username (`admin`) and a random password into the login form. | To capture the target login packet for the attack. |
-| **4** | **Test in Repeater** | Send the intercepted packet to **Repeater** to test the request and observe the server's typical "Login failed" response. | To test the login packet and understand the structure of the server's response. |
-| **5** | **Send to Intruder** | Send the request from Repeater to **Intruder**. | To prepare for replicating and performing the brute force attack. |
-| **6** | **Define Payload Position** | In the Intruder **"Positions"** tab, select the value for the **"password"** field and set it as the payload marker. | To instruct Burp Suite which value to change and iterate over. |
-| **7** | **Configure Payload** | Navigate to the **"Payloads"** tab and paste the compromised password list from the **SecLists** repository. | To utilize common passwords for the dictionary-based brute force attack. |
-| **8** | **Analyze Response Length** | Start the attack and analyze the **Length** column in the results. Identify the anomalous length (**~50 bytes**), which is significantly smaller than the failed responses (**~2,000 bytes**). | To quickly identify the entry that caused a different server reaction, indicating a possible successful login. |
-| **9** | **Verify Success** | Click on the anomalous response and inspect the body/headers for text that confirms successful login or redirection. | To verify that the discovered password is the correct credential. |
+| Step | Action | Description | Purpose | Command / Image |
+| :---: | :--- | :--- | :--- | :--- |
+| **1** | **Setup Burp Suite** | Open browser through Burp Suite and forward any unwanted requests. | To intercept the login packet. | |
+| **2** | **Initial DVWA Login** | Log in to the DVWA dashboard with valid credentials (`admin`, `password`) to gain access. | To access the Brute Force section of the admin panel. | |
+| **3** | **Navigate & Intercept** | Navigate to the **"Brute Force"** tab and input the username (`admin`) and a random password into the login form. | To capture the target login packet for the attack. | |
+| **4** | **Test in Repeater** | Send the intercepted packet to **Repeater** to test the request and observe the server's typical "Login failed" response. | To test the login packet and understand the structure of the server's response. | |
+| **5** | **Send to Intruder** | Send the request from Repeater to **Intruder**. | To prepare for replicating and performing the brute force attack. | |
+| **6** | **Define Payload Position** | In the Intruder **"Positions"** tab, select the value for the **"password"** field and set it as the payload marker. | To instruct Burp Suite which value to change and iterate over. | |
+| **7** | **Configure Payload** | Navigate to the **"Payloads"** tab and paste the compromised password list from the **SecLists** repository. | To utilize common passwords for the dictionary-based brute force attack. | |
+| **8** | **Analyze Response Length** | Start the attack and analyze the **Length** column in the results. Identify the anomalous length (**~50 bytes**), which is significantly smaller than the failed responses (**~2,000 bytes**). | To quickly identify the entry that caused a different server reaction, indicating a possible successful login. | |
+| **9** | **Verify Success** | Click on the anomalous response and inspect the body/headers for text that confirms successful login or redirection. | To verify that the discovered password is the correct credential. | |
