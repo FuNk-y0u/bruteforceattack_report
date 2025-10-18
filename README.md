@@ -16,25 +16,65 @@ The brute-force attack against the DVWA login form was **successful**, demonstra
 
 ## Steps I performed in exact chronological order
 
-| Step | Action | Description | Purpose | Command / Image |
+Setup Burp Suite
+Action: Open the browser through Burp Suite and forward any unwanted requests.
+Description: Configure Burp as your browser proxy so traffic from the target site is routed through Burp.
+Purpose: To intercept the login packet.
+Command / Image:
+![Burp Proxy Setup](https://raw.githubusercontent.com/FuNk-y0u/bruteforceattack_report/refs/heads/main/images/step1.png)
 
-| :---: | :--- | :--- | :--- | :---: |
+Initial DVWA Login
+Action: Log in to the DVWA dashboard with valid credentials (admin, password).
+Description: Authenticate to gain access to the admin area.
+Purpose: To access the Brute Force section of the admin panel.
+Command / Image:
+![DVWA Login Page](https://raw.githubusercontent.com/FuNk-y0u/bruteforceattack_report/refs/heads/main/images/step2.png)
 
-| **1** | **Setup Burp Suite** | Open browser through Burp Suite and forward any unwanted requests. | To intercept the login packet. | <img src="https://raw.githubusercontent.com/FuNk-y0u/bruteforceattack_report/refs/heads/main/images/step1.png" alt="Burp Proxy Setup" width="100"/> |
+Navigate & Intercept
+Action: Go to the Brute Force tab and submit the username (admin) with a random password while intercept is on.
+Description: Capture the login request that the web app sends.
+Purpose: To capture the target login packet for the attack.
+Command / Image:
+![Intercepting Login](https://raw.githubusercontent.com/FuNk-y0u/bruteforceattack_report/refs/heads/main/images/step3.png)
 
-| **2** | **Initial DVWA Login** | Log in to the DVWA dashboard with valid credentials (`admin`, `password`) to gain access. | To access the Brute Force section of the admin panel. | <img src="https://raw.githubusercontent.com/FuNk-y0u/bruteforceattack_report/refs/heads/main/images/step2.png" alt="DVWA Login Page" width="100"/> |
+Test in Repeater
+Action: Send the intercepted login request to Repeater and send it repeatedly to observe responses.
+Description: Inspect the server’s typical “Login failed” response and response structure.
+Purpose: To test the login packet and understand how the server responds.
+Command / Image:
+![Packet in Repeater](https://raw.githubusercontent.com/FuNk-y0u/bruteforceattack_report/refs/heads/main/images/step4.png)
 
-| **3** | **Navigate & Intercept** | Navigate to the **"Brute Force"** tab and input the username (`admin`) and a random password into the login form. | To capture the target login packet for the attack. | <img src="https://raw.githubusercontent.com/FuNk-y0u/bruteforceattack_report/refs/heads/main/images/step3.png" alt="Intercepting Login" width="100"/> |
+Send to Intruder
+Action: From Repeater (or Proxy), send the request to Intruder.
+Description: Prepare the captured request for automated payload insertion.
+Purpose: To replicate and perform the brute-force attack.
+Command / Image:
+![Sending to Intruder](https://raw.githubusercontent.com/FuNk-y0u/bruteforceattack_report/refs/heads/main/images/step5.png)
 
-| **4** | **Test in Repeater** | Send the intercepted packet to **Repeater** to test the request and observe the server's typical "Login failed" response. | To test the login packet and understand the structure of the server's response. | <img src="https://raw.githubusercontent.com/FuNk-y0u/bruteforceattack_report/refs/heads/main/images/step4.png" alt="Packet in Repeater" width="100"/> |
+Define Payload Position
+Action: In Intruder → Positions, highlight the password value and set it as the payload marker.
+Description: Tell Intruder which part of the request to vary.
+Purpose: To instruct Burp which value to change and iterate over.
+Command / Image:
+![Intruder Position Set](https://raw.githubusercontent.com/FuNk-y0u/bruteforceattack_report/refs/heads/main/images/step6.png)
 
-| **5** | **Send to Intruder** | Send the request from Repeater to **Intruder**. | To prepare for replicating and performing the brute force attack. | <img src="https://raw.githubusercontent.com/FuNk-y0u/bruteforceattack_report/refs/heads/main/images/step5.png" alt="Sending to Intruder" width="100"/> |
+Configure Payload
+Action: In Intruder → Payloads, load the compromised password list (e.g., from the SecLists repository).
+Description: Provide the dictionary of candidate passwords for the attack.
+Purpose: To use common passwords for a dictionary-based brute-force attempt.
+Command / Image:
+![Loading SecLists Payload](https://raw.githubusercontent.com/FuNk-y0u/bruteforceattack_report/refs/heads/main/images/step7.png)
 
-| **6** | **Define Payload Position** | In the Intruder **"Positions"** tab, select the value for the **"password"** field and set it as the payload marker. | To instruct Burp Suite which value to change and iterate over. |
- <img src="https://raw.githubusercontent.com/FuNk-y0u/bruteforceattack_report/refs/heads/main/images/step6.png" alt="Intruder Position Set" width="100"/>
+Analyze Response Length
+Action: Start the Intruder attack and watch the results table, especially the Length column.
+Description: Compare response sizes to spot anomalies.
+Purpose: To quickly identify an entry that causes an unusual server reaction (e.g., a ~50-byte response vs. ~2000 bytes for failures).
+Command / Image:
+![Analyzing Response Length](https://raw.githubusercontent.com/FuNk-y0u/bruteforceattack_report/refs/heads/main/images/step8.png)
 
-| **7** | **Configure Payload** | Navigate to the **"Payloads"** tab and paste the compromised password list from the **SecLists** repository. | To utilize common passwords for the dictionary-based brute force attack. | <img src="https://raw.githubusercontent.com/FuNk-y0u/bruteforceattack_report/refs/heads/main/images/step7.png" alt="Loading SecLists Payload" width="100"/> |
-
-| **8** | **Analyze Response Length** | Start the attack and analyze the **Length** column in the results. Identify the anomalous length (**~50 bytes**), which is significantly smaller than the failed responses (**~2,000 bytes**). | To quickly identify the entry that caused a different server reaction, indicating a possible successful login. | <img src="https://raw.githubusercontent.com/FuNk-y0u/bruteforceattack_report/refs/heads/main/images/step8.png" alt="Analyzing Response Length" width="100"/> |
-
-| **9** | **Verify Success** | Click on the anomalous response and inspect the body/headers for text that confirms successful login or redirection. | To verify that the discovered password is the correct credential. | <img src="https://raw.githubusercontent.com/FuNk-y0u/bruteforceattack_report/refs/heads/main/images/step9.png" alt="Verifying Successful Login" width="100"/> |
+Verify Success
+Action: Click the anomalous response, inspect headers/body for success indicators (redirect, welcome text, different body).
+Description: Confirm that the differing response corresponds to a successful login.
+Purpose: To verify the discovered password is correct.
+Command / Image:
+![Verifying Successful Login](https://raw.githubusercontent.com/FuNk-y0u/bruteforceattack_report/refs/heads/main/images/step9.png)
