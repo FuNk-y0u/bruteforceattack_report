@@ -16,14 +16,13 @@ The brute-force attack against the DVWA login form was **successful**, demonstra
 
 ## Steps I performed in exact chronological order
 
-Step| Action | Command / Screen Shot| Description| Purpose | 
---- | --- | --- | --- |--- |--- |--- |--- |--- |--- |--- |---
-1| Setup Burp Suite ||Open browser through burp suite & forward any unwanted request |To intercept login packet
-2| Login to DVWA admin dashboard | |Login to DVWA dashboard through http://localhost/dvwa/login.php with "admin", "password" as username and password respectively.| To access brute force attack section in the admin panel
-3| Navigate to 	"brute force" tab| |Navigate to brute force tab & add "admin" and a random password respectively on the login form| To intercept the login packet 
-4| Send the captured packet to repeater| | Right click the packet and  choose "send to repeater" and identify the returned response| To test out the login packet
-5| Send the packet to the intruder|  |Right click anywhere on the repeater tab and choose "send to intruder"| To replicate & perform brute force attack through intruder
-6| Add positions in intruder| |Select the payload for "password" and click on add position| To make burp suite know which value to change and iterate over
-7| Add in compromised passwords| | Navigate to "pay load configuration" and paste in your compromised password list from  [github danielmiessler/SecLists](https://github.com/danielmiessler/SecLists)| To utilize common passwords for brute force attack
-8| Check the length of response| |The response over here is 50, which is < 2000~ of other response, hence possible correct data | To identify which password is correct.
-9| Check response of anomalous response| |Click on the response and check for any text to verify for correct password| To check whether the password is correct 
+Step,Action,Description,Purpose
+1,Setup Burp Suite,Open browser through Burp Suite and forward any unwanted requests.,To intercept the login packet.
+2,Initial DVWA Login,"Login to DVWA dashboard at http://localhost/dvwa/login.php with ""admin"" and ""password"" to gain access.",To access the Brute Force section in the admin panel.
+3,Navigate & Intercept,"Navigate to the ""Brute Force"" tab and input ""admin"" and a random password into the login form.",To capture the target login packet for the attack.
+4,Test in Repeater,"Right-click the intercepted packet and choose ""Send to Repeater"" to test the login request.",To test the login packet and understand the structure of the server's response.
+5,Send to Intruder,"Right-click the request in Repeater and choose ""Send to Intruder.""",To prepare for replicating and performing the brute force attack.
+6,Define Position,"In the Intruder ""Positions"" tab, select the value for the ""password"" field and click ""Add \S"" to set the payload marker.",To instruct Burp Suite which value to change and iterate over during the attack.
+7,Configure Payload,"Navigate to ""Payloads"" and paste the compromised password list from the SecLists repository.",To utilize common passwords for the dictionary-based brute force attack.
+8,Analyze Response Length,"Start the attack and check the response length column. Identify the anomalous response length (e.g., 50 bytes), which is significantly smaller than failed attempts (~2000 bytes).","To quickly identify the entry that caused a different server reaction, indicating a possible successful login."
+9,Verify Success,Click on the anomalous response and inspect the body/headers for text that confirms successful login or redirection.,To verify that the password identified is indeed the correct credential.
